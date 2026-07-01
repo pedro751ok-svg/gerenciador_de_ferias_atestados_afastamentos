@@ -1,0 +1,178 @@
+Sistema de Afastamentos e Solicitações
+Visão geral
+
+Sistema responsável por gerenciar solicitações de afastamento de funcionários, incluindo atestados médicos, férias e afastamentos relacionados ao INSS.
+
+Arquitetura do Sistema
+Arquitetura em Camadas
+
+O sistema foi estruturado utilizando Arquitetura em Camadas, separando responsabilidades para melhor organização e manutenção.
+
+Camadas utilizadas:
+1. Camada de Apresentação (Controller)
+Responsável por receber requisições
+Valida entrada básica
+Encaminha para a camada de serviço
+Retorna respostas ao cliente
+2. Camada de Serviço (Service)
+Contém regras de negócio
+Executa validações principais
+Aplica lógica de RBAC
+Orquestra operações entre domínio e banco
+3. Camada de Domínio (Domain)
+Define entidades e regras centrais
+Contém enums e validações básicas
+Mantém regras independentes de infraestrutura
+4. Camada de Persistência (Repository / ORM)
+Responsável pelo acesso ao banco de dados
+Utiliza ORM (SQLAlchemy)
+Executa operações CRUD
+Segurança do Sistema
+Autenticação
+
+O sistema utiliza JWT (JSON Web Token) para autenticação.
+
+Fluxo:
+
+Usuário realiza login com email e senha
+Sistema valida credenciais
+Gera token JWT
+Token é usado em requisições subsequentes
+
+Características:
+
+Stateless
+Identificação do usuário via token
+Validação via middleware/service
+Senhas (Hash)
+
+Senhas são armazenadas utilizando hash.
+
+Utiliza algoritmo de hash (ex: bcrypt)
+Comparação feita no login
+Senhas nunca ficam em texto puro no banco
+Autorização (RBAC)
+
+Após autenticação via JWT:
+
+Role é extraído do token
+Sistema verifica permissões antes de executar ações
+Controle baseado em Role-Based Access Control
+Permissões do Sistema (RBAC)
+Funcionário
+Criar solicitação
+Cancelar solicitação
+Encarregado
+Criar solicitação
+Cancelar solicitação
+Aceitar solicitação
+Rejeitar solicitação
+Exibir solicitações
+Gerenciar CID
+Gerenciar afastamentos
+RH
+Criar solicitação
+Cancelar solicitação
+Aceitar solicitação
+Rejeitar solicitação
+Exibir solicitações
+Gerenciar CID
+Gerenciar afastamentos
+Entidades do Banco de Dados
+Funcionários (funcionarios)
+
+Campos:
+
+id (PK)
+nome
+email
+cpf (único)
+senha
+role (Roleenum)
+setor
+ativo (boolean)
+criado_em
+Tipos de Solicitação (tipo)
+
+Campos:
+
+id (PK)
+descricao (descricaoEnum)
+ativo
+Solicitações (solicitacoes)
+
+Campos:
+
+id (PK)
+id_funcionario (FK)
+id_tipo (FK)
+data_inicio
+data_fim
+status (StatEnum)
+aprovado_por (FK)
+reprovado_por (FK)
+criado_em
+aprovado_em
+reprovado_em
+
+Regras:
+
+status padrão = PENDENTE
+pertence a um funcionário
+não pode ser aprovado e rejeitado ao mesmo tempo
+Atestados (atestados)
+
+Campos:
+
+id (PK)
+id_solicitacoes (FK)
+cid
+Afastamentos INSS (afastamentos)
+
+Campos:
+
+id (PK)
+id_solicitacoes (FK)
+codigo_especie (StatusInss)
+Férias (ferias)
+
+Campos:
+
+id (PK)
+id_solicitacao (FK)
+Fluxo do Sistema
+
+Criação de solicitação
+Funcionário cria solicitação
+Escolhe tipo (Atestado, Férias, INSS)
+Define período
+Status inicial = PENDENTE
+Aprovação / Rejeição
+
+Aprovado:
+
+status = APROVADO
+aprovado_por preenchido
+aprovado_em preenchido
+
+Rejeitado:
+
+status = REJEITADO
+reprovado_por preenchido
+reprovado_em preenchido
+Observações de Arquitetura
+Sistema estruturado em camadas (Controller, Service, Domain, Repository)
+Solicitações é a entidade central
+Tipos definidos em tabela própria
+Atestado e INSS são extensões da solicitação
+JWT usado para autenticação
+Hash para proteção de senha
+RBAC para autorização
+Resultado Geral
+CRUD funcional implementado
+RBAC funcionando
+Autenticação JWT implementada
+Senhas com hash
+Arquitetura em camadas aplicada
+Modelagem relacional estruturada
+Fluxo de aprovação definido
