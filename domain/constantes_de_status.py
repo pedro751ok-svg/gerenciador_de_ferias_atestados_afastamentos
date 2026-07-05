@@ -22,6 +22,7 @@ class Roleenum(str,enum.Enum):
     ajudante = "ajudante"
     encarregado = "encarregado"
     gerente = "gerente"
+    rh = "rh"
 
 class StatusInss(str,enum.Enum):
     B31 = "Auxílio-doença comum"

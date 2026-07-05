@@ -3,9 +3,9 @@ class ControleAcesso:
     PERMISSOES = {
         "funcionario": [
             "criar_solicitacao",
-            "cancelar_solicitacao"
-            "exebir_solicitacao"
-            "cancelar_solicitacao"
+            "cancelar_solicitacao",
+            "exibir_solicitacao"
+            
         ],
 
         "encarregado": [
@@ -16,7 +16,7 @@ class ControleAcesso:
             "exibir_solicitacao",
             "gerenciar_cid",
             "gerenciar_afastamento"
-            "cancelar_solicitacao"
+            
         ],
 
         "gerente": [
@@ -27,10 +27,12 @@ class ControleAcesso:
             "gerenciar_solicitacoes",
             "historico_solicitacoes",
             "listar_solicitacoes_pendentes",
-            "exebir_sollicitacao"
+            "exibir_solicitacao",
             "gerenciar_cid",
             "gerenciar_afastamento"
-            "cancelar_solicitacao"
+        ],
+        "rh":[
+            "atualizar_solicitacao"
         ]
     }
     @staticmethod

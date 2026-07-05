@@ -88,3 +88,10 @@ class SolicitacoesServices:
             if not ControleAcesso.controle_de_acesso(funcionario.role,"cancelar_solicitacao"):
                 return "sem prmição paraz fazer cancelamentos"
             return "permissao aceita"
+        @staticmethod
+        def atualizar_solicitacao(id_funcionario):
+            with session() as sessao:
+                funcionario = sessao.query(Funcionarios).filter_by(id = id_funcionario).first()
+                if not ControleAcesso.controle_de_acesso(funcionario.role ,"atualizar_solicitacao"):
+                    return "sem permissao para atualizar solicitacoes"
+                return "permissao aceita"

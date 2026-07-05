@@ -23,7 +23,8 @@ class Funcionarios(Base):
     
 class TipoDeSolicitacao(Base):
     __tablename__ = "tipo"
-    id_funcionario = Column(Integer,primary_key=True)
+    id = Column(Integer,primary_key=True)
+    id_funcionario = Column(Integer,ForeignKey("funcionarios.id"))
     descricao = Column(Enum(DescricaoEnum),nullable=False)
     ativo = Column(Boolean,default=True)
 

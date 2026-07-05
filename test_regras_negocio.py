@@ -29,7 +29,7 @@ def test_cadastrar():
         role = "gerente"
         setor = "producao"
         ativo = True
-
+        db = sessao
         novo_funcionario = Cadastro_e_login.cadastro_de_usuario(
             nome=nome,
             email=email,
@@ -38,6 +38,7 @@ def test_cadastrar():
             role = role,
             setor = setor,
             ativo= ativo
+            db = sessao
 
         )
     assert novo_funcionario == "cadastrado com sucesso"
