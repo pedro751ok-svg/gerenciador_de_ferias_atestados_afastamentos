@@ -3,7 +3,8 @@ import enum
 from datetime import datetime
 from domain.constantes_de_status import DescricaoEnum,StatEnum,Roleenum,StatusInss
 from sqlalchemy.orm import declarative_base,sessionmaker,relationship
-engine = create_engine("postgresql://postgres:bolhas@localhost:5432/sistema_ferias")
+from config.configurações import conf_priv
+engine = create_engine(conf_priv.URL)
 Base = declarative_base()
 session = sessionmaker(bind=engine)
 

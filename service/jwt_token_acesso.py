@@ -1,9 +1,10 @@
 import jwt
 from dotenv import load_dotenv
 from datetime import datetime,timezone,timedelta
+from config.configurações import conf_priv
 load_dotenv()
 import os 
-senha = os.getenv("SENHA_TOKEN")
+senha = os.getenv(conf_priv.STK)
 class Gerando_token:
     @staticmethod
     def gerar(usuario_id):
@@ -13,7 +14,7 @@ class Gerando_token:
             "exp":datetime.now(timezone.utc)+ timedelta(hours=1)
         }
 
-        token = jwt.encode(payload,senha,algorithm="HS256")
+        token = jwt.encode(payload,senha,algorithm=conf_priv.ALGORITHM)
 
         return token
 class Validar_token:
@@ -23,7 +24,7 @@ class Validar_token:
             payload = jwt.decode(
                 token,
                 senha,
-                algorithms = "HS256"
+                algorithms = conf_priv.ALGORITHM
             )
             return payload
         except jwt.ExpiredSignatureError:

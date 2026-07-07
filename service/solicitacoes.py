@@ -30,7 +30,7 @@ class Solicitacao_service:
                 db.close()
 
     @staticmethod
-    def gerenciador_solicitacoes(data_inicio:int,data_fim:int,id_funcionario:int,id_tipo:int,dados_extras:str,db = None):
+    def gerenciador_solicitacoes(data_inicio:datetime,data_fim:datetime,id_funcionario:int,id_tipo:int,dados_extras:str,db = None):
         if db is None:
             db = session()
             close_db = True
@@ -93,50 +93,73 @@ class Solicitacao_service:
             raise ValueError("tipo de solicitacao desconhecido")
 
     @staticmethod
-    def exibir_solicitacao(id_solicitacao:int):
-        with session() as sessao:
-            ver_solicitacoes = sessao.query(Solicitacoes).filter_by(id = id_solicitacao).first()
+    def exibir_solicitacao(id_solicitacao:int,db: None):
+        if db is None:
+            db = session()
+            close_db = True
+        else:
+            close_db = False
+        try:
+            ver_solicitacoes = db.query(Solicitacoes).filter_by(id = id_solicitacao).first()
             if not ver_solicitacoes:
-                return "nenhuma solicitacao encontrada "
+                raise ValueError("nenhuma solicitacao encontrada ")
             
             return ver_solicitacoes
+        except Exception as e:
+            raise ValueError(f"erro em {e}")
+        finally:
+            if close_db:
+                db.close()
         
     @staticmethod
-    def aceitar_solicitacao(id_solicitacao,aprovado_por):
+    def aceitar_solicitacao(id_solicitacao,aprovado_por, db = None):
+        if db is None:
+            db = session()
+            close_db = True
+        else:
+            close_db = False
         try:
-            with session() as sessao:
-                solicitacao = sessao.query(Solicitacoes).filter_by(id = id_solicitacao).first()
-                if not solicitacao:
-                    return "nenhuma solicitacao encontrada com esse id "
-                if solicitacao.status != StatEnum.pendente:
-                    return "solicitacao nao esta pendente"
-                Regrasdestatus.status_regras(solicitacao)
-                solicitacao.status = StatEnum.aprovado
-                solicitacao.aprovado_por = aprovado_por
+            solicitacao = db.query(Solicitacoes).filter_by(id = id_solicitacao).first()
+            if not solicitacao:
+                raise ValueError ("nenhuma solicitacao encontrada com esse id ")
+            if solicitacao.status != StatEnum.pendente:
+                raise ValueError("solicitacao nao esta pendente")
+            Regrasdestatus.status_regras(solicitacao)
+            solicitacao.status = StatEnum.aprovado
+            solicitacao.aprovado_por = aprovado_por
 
-                sessao.commit()
-                return solicitacao
+            db.commit()
+            return solicitacao
         except:
-                sessao.rollback()
+                db.rollback()
                 return "falha na sessao"
-
+        finally:
+            if close_db:
+                db.close()
     @staticmethod
-    def rejeitar_solicitacao(id_solicitacao,reprovado_por):
+    def rejeitar_solicitacao(id_solicitacao,reprovado_por, db = None):
+        if db is None:
+            db = session()
+            close_db = True
+        else:
+            close_db - False
         try:
-            with session() as sessao:
-                solicitacao = sessao.query(Solicitacoes).filter_by(id = id_solicitacao).first()
-                if not solicitacao:
-                    return "nenhuma solicitacao pendente"
-                if solicitacao.status != StatEnum.pendente:
-                    return "solicitacao nao esta pendente"
-                Regrasdestatus.status_regras(solicitacao)
-                solicitacao.status = StatEnum.rejeitado
-                solicitacao.reprovado_por = reprovado_por
-                sessao.commit()
-                return solicitacao
+            solicitacao = db.query(Solicitacoes).filter_by(id = id_solicitacao).first()
+            if not solicitacao:
+                raise ValueError ("nenhuma solicitacao pendente")
+            if solicitacao.status != StatEnum.pendente:
+                raise ValueError("solicitacao nao esta pendente")
+            Regrasdestatus.status_regras(solicitacao)
+            solicitacao.status = StatEnum.rejeitado
+            solicitacao.reprovado_por = reprovado_por
+            db.commit()
+            return solicitacao
         except:
-            sessao.rollback()
+            db.rollback()
             return "falha na sessao"
+        finally:
+            if close_db:
+                db.close()
 
     @staticmethod
     def historico_solicitacoes(id_solicitacao):
@@ -147,21 +170,28 @@ class Solicitacao_service:
             return ver_solicitacoes 
 
     @staticmethod
-    def cancelar_solicitacao(id_solicitacao):
+    def cancelar_solicitacao(id_solicitacao, db = None):
+        if db is None:
+            db = session()
+            close_db = True
+        else:
+            close_db = False
         try:
-            with session() as sessao:
-                cancel_solicitacao = sessao.query(Solicitacoes).filter_by(id = id_solicitacao).first()
-                if not cancel_solicitacao:
-                    return "nenhuma solicitacao encontradar"
-                if cancel_solicitacao.status == StatEnum.aprovado:
-                    return "impossivel cancelar solicitacao no momento"
-                cancel_solicitacao.status = StatEnum.cancelado
+            cancel_solicitacao = db.query(Solicitacoes).filter_by(id = id_solicitacao).first()
+            if not cancel_solicitacao:
+                raise ValueError("nenhuma solicitacao encontradar")
+            if cancel_solicitacao.status == StatEnum.aprovado:
+                raise ValueError("impossivel cancelar solicitacao no momento")
+            cancel_solicitacao.status = StatEnum.cancelado
                 
-                sessao.commit()
-                return "solicitacao cancelada com sucesso"
+            db.commit()
+            return "solicitacao cancelada com sucesso"
         except:
-            sessao.rollback()
+            db.rollback()
             return "falha na sessao"
+        finally:
+            if close_db:
+                db.close()
 
     @staticmethod
     def listar_solicitações_pendentes(solicitacao_status):

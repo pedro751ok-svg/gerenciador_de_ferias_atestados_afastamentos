@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models.dados_dos_funcionarios import Base,Funcionarios,Solicitacoes,TipoDeSolicitacao,Ferias,Atestados_funcionarios,Afastamentos_INSS
+from models.dados_dos_funcionarios import Base
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
