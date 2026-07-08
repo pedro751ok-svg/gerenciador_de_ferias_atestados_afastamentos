@@ -44,7 +44,7 @@ class Solicitacoes(Base):
     aprovado_por = Column(Integer, ForeignKey("funcionarios.id"))
     reprovado_por = Column(Integer, ForeignKey("funcionarios.id"))
 
-    criado_em = Column(DateTime, default=datetime.utcnow)
+    criado_em = Column(DateTime, default=datetime.now)
     aprovado_em = Column(DateTime, nullable=True)
     reprovado_em = Column(DateTime, nullable=True)
 

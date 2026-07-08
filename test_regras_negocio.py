@@ -2,10 +2,10 @@ import pytest
 from utils.configurações_cpf_senhas import Gerenciador_cpf,Senha_hash
 from service.logins import Cadastro_e_login
 from service.solicitacoes import Solicitacao_service
-from domain.constantes_de_status import DescricaoEnum
+from domain.constantes_de_status import DescricaoEnum,StatusInss,StatEnum
 from models.dados_dos_funcionarios import Funcionarios,TipoDeSolicitacao
-from database.banco_de_testes import session_teste]
-import datetime
+from database.banco_de_testes import session_teste
+from datetime import datetime
 def test_cpf():
     assert Gerenciador_cpf.validar_cpf('52998224725') == True 
     assert Gerenciador_cpf.validar_cpf('12345678909') == True
@@ -20,8 +20,8 @@ def test_chcar_senha():
     hash_gerado = Senha_hash.senha_hash(senha)
 
     assert Senha_hash.validar_senha(senha, hash_gerado) == True
-#teste de llogin 
-@pytest.fixture
+
+
 def test_cadastrar(db_test):
     nome = "pedro"
     email = "pedro751@gamil.com"
@@ -49,7 +49,17 @@ def test_cadastrar(db_test):
     assert registro.senha != "pedro751"
     print(type(novo_funcionario))
     print(novo_funcionario)
-@pytest.fixture
+    
+def test_login(db_test,funcionario_test):
+    senha = "senha123"
+    resultado = Cadastro_e_login.login_funcionario(email = funcionario_test.email,
+                                cpf = funcionario_test.cpf,
+                                senha=senha,db = db_test)
+    assert resultado is not None
+    assert resultado.email == funcionario_test.email
+    assert resultado.cpf == funcionario_test.cpf
+    assert resultado.senha == funcionario_test.senha
+
 def test_mandar_solicitacao(db_test):
         descricao = "atestado"
         ativo = True
@@ -66,20 +76,42 @@ def test_mandar_solicitacao(db_test):
         assert registro is not None
         assert registro.descricao == descricao
         assert resultado.ativo == ativo
-@pytest.fixture
-def gerenciar(db_test):
-     data_inicio = datetime(07/07/2026)
-     data_fim = datetime(07/08/2026)
-     dados_extra = {"codoigo especie: B31"}
+
+def test_gerenciar_solicitacoes(db_test,funcionario_test,tipo_de_solicitacao_test):
+     data_inicio = datetime(2026,7,7)
+     data_fim = datetime(2026,7,8,)
+     dados_extra = {"codigo_especie": StatusInss.B31}
      resultado = Solicitacao_service.gerenciador_solicitacoes(        
         data_inicio=data_inicio,
         data_fim=data_fim,
-        id_funcionario=test_cadastrar.id,
-        id_tipo=test_mandar_solicitacao.id,
+        id_funcionario=funcionario_test.id,
+        id_tipo=tipo_de_solicitacao_test.id,
         dados_extras=dados_extra,
         db=db_test)
      assert resultado is not None
      assert not isinstance(resultado,str)
-     assert resultado.id_funcionario == test_cadastrar.id
+     assert resultado.id_funcionario == funcionario_test.id
+def test_aceitar_solicitacao(db_test,teste_de_solicitacoes,funcionario_test):
+    resultado = Solicitacao_service.aceitar_solicitacao(id_solicitacao=teste_de_solicitacoes.id,aprovado_por=funcionario_test.id,db=db_test)
+    assert resultado.status == StatEnum.aprovado
 
-     #data_inicio:int,data_fim:int,id_funcionario:int,id_tipo:int,dados_extras:str,db = None
+def test_rejeitar_solicitacoes(db_test,teste_de_solicitacoes,funcionario_test):
+     resultado = Solicitacao_service.rejeitar_solicitacao(id_solicitacao=teste_de_solicitacoes.id,reprovado_por = funcionario_test.id,db = db_test)
+     assert resultado.status == StatEnum.rejeitado
+    
+def test_cancelar_solicitacao(db_test,teste_de_solicitacoes):
+     resultado = Solicitacao_service.cancelar_solicitacao(id_solicitacao=teste_de_solicitacoes.id,db = db_test)
+     assert resultado.status == StatEnum.cancelado
+
+def test_atualizar_solicitacao(db_test,teste_de_solicitacoes,funcionario_test,tipo_de_solicitacao_test):
+    data_inicio = datetime(2027,8,1)
+    data_fim = datetime(2027,9,2)
+    resultado = Solicitacao_service.atualizar_solicitacao(
+          id_solicitacao = teste_de_solicitacoes.id,
+          id_tipo = tipo_de_solicitacao_test.id,
+          data_inicio = data_inicio,
+          data_fim = data_fim,
+          db = db_test)
+    assert resultado is not None
+    assert resultado.data_inicio == data_inicio
+    assert resultado.data_fim == data_fim

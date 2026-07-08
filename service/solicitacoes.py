@@ -124,15 +124,15 @@ class Solicitacao_service:
                 raise ValueError ("nenhuma solicitacao encontrada com esse id ")
             if solicitacao.status != StatEnum.pendente:
                 raise ValueError("solicitacao nao esta pendente")
-            Regrasdestatus.status_regras(solicitacao)
+            Regrasdestatus.status_regras(solicitacao.aprovado_por,solicitacao.reprovado_por)
             solicitacao.status = StatEnum.aprovado
             solicitacao.aprovado_por = aprovado_por
 
             db.commit()
             return solicitacao
-        except:
+        except Exception as e:
                 db.rollback()
-                return "falha na sessao"
+                raise e
         finally:
             if close_db:
                 db.close()
@@ -142,14 +142,14 @@ class Solicitacao_service:
             db = session()
             close_db = True
         else:
-            close_db - False
+            close_db = False
         try:
             solicitacao = db.query(Solicitacoes).filter_by(id = id_solicitacao).first()
             if not solicitacao:
                 raise ValueError ("nenhuma solicitacao pendente")
             if solicitacao.status != StatEnum.pendente:
                 raise ValueError("solicitacao nao esta pendente")
-            Regrasdestatus.status_regras(solicitacao)
+            Regrasdestatus.status_regras(solicitacao.reprovado_por , solicitacao.aprovado_por)
             solicitacao.status = StatEnum.rejeitado
             solicitacao.reprovado_por = reprovado_por
             db.commit()
@@ -179,16 +179,16 @@ class Solicitacao_service:
         try:
             cancel_solicitacao = db.query(Solicitacoes).filter_by(id = id_solicitacao).first()
             if not cancel_solicitacao:
-                raise ValueError("nenhuma solicitacao encontradar")
+                raise ValueError("nenhuma solicitacao encontrada")
             if cancel_solicitacao.status == StatEnum.aprovado:
                 raise ValueError("impossivel cancelar solicitacao no momento")
             cancel_solicitacao.status = StatEnum.cancelado
                 
             db.commit()
-            return "solicitacao cancelada com sucesso"
-        except:
+            return cancel_solicitacao
+        except Exception as e:
             db.rollback()
-            return "falha na sessao"
+            raise e
         finally:
             if close_db:
                 db.close()
@@ -202,10 +202,14 @@ class Solicitacao_service:
             return solicitacoes
 
     @staticmethod
-    def atualizar_solicitacao(id_solicitacao:int,id_tipo:int = None,data_inicio:datetime = None,data_fim:datetime = None):
-        try:
-            with session() as sessao:
-                solicitacao = sessao.query(Solicitacoes).filter_by(id = id_solicitacao).first()
+    def atualizar_solicitacao(id_solicitacao:int,id_tipo:int = None,data_inicio:datetime = None,data_fim:datetime = None,db = None):
+        if db is None:
+            db = session()
+            close_db = True
+        else:
+            close_db = False
+            try:
+                solicitacao = db.query(Solicitacoes).filter_by(id = id_solicitacao).first()
             
                 if not solicitacao:
                     raise ValueError ("nenhum funcionario encontrado")
@@ -217,9 +221,12 @@ class Solicitacao_service:
                     solicitacao.data_inicio = data_inicio
                 if data_fim:
                     solicitacao.data_fim = data_fim
-                sessao.commit()
-                sessao.refresh(solicitacao)
+                db.commit()
+                db.refresh(solicitacao)
                 return solicitacao
-        except Exception as e:
-            sessao.rollback()
-            raise
+            except Exception as e:
+                db.rollback()
+                raise
+            finally:
+                if close_db:
+                    db.close()
