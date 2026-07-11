@@ -19,6 +19,7 @@ class Cadastro_e_login:
             funcionario = Funcionarios(
                 nome=nome,
                 email=email,
+                cpf=cpf,
                 senha=senha_ok,
                 role=role,
                 setor=setor,
@@ -34,7 +35,7 @@ class Cadastro_e_login:
             if close_db:
                 db.close()
     @staticmethod
-    def login_funcionario(email:str,cpf:str,senha:str,db = None):
+    def login_funcionario(cpf:str,senha:str,db = None):
         if db is None:
             db = session()
             close_db = True

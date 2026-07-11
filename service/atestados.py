@@ -3,9 +3,8 @@ from models.dados_dos_funcionarios import Solicitacoes, Atestados_funcionarios
 
 
 class AtestadoValidador:
-
     @staticmethod
-    def atualizar_status(id_solicitacao, db):
+    def regras_de_atestados(id_solicitacao, db):
         solicitacao = db.query(Solicitacoes).filter_by(id=id_solicitacao).first()
         if not solicitacao:
             raise ValueError("Nenhuma solicitação encontrada")

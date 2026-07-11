@@ -2,9 +2,8 @@ import pytest
 from utils.configurações_cpf_senhas import Gerenciador_cpf,Senha_hash
 from service.logins import Cadastro_e_login
 from service.solicitacoes import Solicitacao_service
-from domain.constantes_de_status import DescricaoEnum,StatusInss,StatEnum
+from domain.constantes_de_status import StatusInss,StatEnum
 from models.dados_dos_funcionarios import Funcionarios,TipoDeSolicitacao
-from database.banco_de_testes import session_teste
 from datetime import datetime
 def test_cpf():
     assert Gerenciador_cpf.validar_cpf('52998224725') == True 

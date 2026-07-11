@@ -39,20 +39,20 @@ class Solicitacao_service:
         try:
             funcionario = db.query(Funcionarios).filter_by(id = id_funcionario).first()
             if not funcionario:
-                return "funcionario nao encontrado "
+                raise ValueError ("funcionario nao encontrado ")
             
             if data_fim < data_inicio:
-                return " as datas nao concidem"
+                raise ValueError (" as datas nao concidem")
             
             tipo = db.query(TipoDeSolicitacao).filter_by(id=id_tipo).first()
             if not tipo:
-                return "tipo de solicitção não encontrada"
+                raise ValueError("tipo de solicitção não encontrada")
             
             controle_solicitacoes = db.query(Solicitacoes).filter(
                 Solicitacoes.id_funcionario == id_funcionario,
                 Solicitacoes.status == StatEnum.pendente).first()
             if controle_solicitacoes:
-                return "funcionario ja esta com uma solicitacao pendente"
+                raise ValueError ("funcionario ja esta com uma solicitacao pendente")
             
             if tipo.descricao == DescricaoEnum.ferias:
                 FeriasValidador.validar(id_funcionario, data_inicio, data_fim, db)
