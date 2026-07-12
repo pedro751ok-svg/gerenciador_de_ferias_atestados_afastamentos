@@ -26,7 +26,7 @@ class FeriasValidador:
         )
 
         if ferias_existentes:
-            if Regrasferias.vericar_expiracao(ferias_existentes.data_inicio):
+            if Regrasferias.verificar_expiracao(ferias_existentes.data_inicio):
                 ferias_existentes.status = StatEnum.expirado
                 db.flush()
             else:

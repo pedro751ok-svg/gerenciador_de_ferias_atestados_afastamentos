@@ -101,7 +101,7 @@ class ControleGeral:
                     senha=senha,
                     db = db
                 )
-                token = Gerando_token.gerar(funcionario.id)
+                token = Gerando_token.gerar(funcionario)
                 return jsonify({"sucesso":"funcionario encontrado",
                                 "id_funcionario":funcionario.id,
                                 "token":token}),200

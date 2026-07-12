@@ -1,10 +1,5 @@
 import enum 
-class Statsnumber(int,enum.Enum):
-    pendente = 1
-    aprovado = 2
-    rejeitado = 3
-    encaminhado_afastamento = 4
-    
+
 class DescricaoEnum(str,enum.Enum):
     afastamento = "afastamento"
     atestado = "atestado"

@@ -64,7 +64,7 @@ def gerenciar_afastamentos():
 
 @rota.route("/exibir-solicitacao",methods = ["GET"])
 @requer_token
-@requer_permissao("exibir_soolicitacao")
+@requer_permissao("exibir_solicitacao")
 def exibir():
     return ControleGeral.controlle_exibir_solicitacao()
 
