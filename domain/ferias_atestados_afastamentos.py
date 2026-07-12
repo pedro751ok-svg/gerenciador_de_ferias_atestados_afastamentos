@@ -14,7 +14,8 @@ class AfastamentoInss:
         days_ = (data_fim - data_inicio).days + 1
         if days_ <=0:
             raise ValueError("a data final deve ser maior que a data incio")
-        return days_, StatEnum
+        return days_, StatEnum.pendente
+class Regrasferias:
     @staticmethod
     def regras_ferias(data_inicio:datetime,data_fim:datetime):
             dias = (data_fim - data_inicio).days + 1
