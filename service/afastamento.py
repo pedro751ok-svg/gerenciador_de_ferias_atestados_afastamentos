@@ -1,4 +1,4 @@
-from domain.ferias_atestados_afastamentos import Afastamento_Inss
+from domain.ferias_atestados_afastamentos import AfastamentoInss
 from domain.constantes_de_status import StatEnum
 from models.dados_dos_funcionarios import Afastamentos_INSS
 
@@ -15,7 +15,7 @@ class AfastamentoValidador:
         if not afastamento:
             raise ValueError("Nenhum afastamento encontrado")
 
-        resultado = Afastamentos_INSS.afastado_pelo_inss(
+        resultado = AfastamentoInss.afastado_pelo_inss(
             id_solicitacao=id_solicitacao,
             tipo_de_solicitacao=tipo_de_solicitacao,
         )
