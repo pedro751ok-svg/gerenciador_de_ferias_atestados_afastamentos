@@ -14,6 +14,7 @@ def requer_token(funcao):
         payload = Validar_token(token)
         if not payload:
             return jsonify({"erro":"token invalido ou expirado"})
-        request.usuario_id = payload["user_id"]
+        request.user_id = payload["user_id"]
+        request.role = payload["role"]
         return funcao(*args,**kwargs)
     return decorated

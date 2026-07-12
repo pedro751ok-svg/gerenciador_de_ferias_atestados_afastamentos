@@ -33,6 +33,7 @@ class ControleAcesso:
         ],
         "rh":[
             "atualizar_solicitacao"
+            "cadastrar_funcionario"
         ]
     }
     @staticmethod

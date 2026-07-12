@@ -2,6 +2,7 @@ import jwt
 from dotenv import load_dotenv
 from datetime import datetime,timezone,timedelta
 from config.configurações import conf_priv
+from models.dados_dos_funcionarios import Funcionarios
 load_dotenv()
 import os 
 senha = os.getenv(conf_priv.STK)
@@ -10,7 +11,8 @@ class Gerando_token:
     def gerar(usuario_id):
         
         payload = {
-            "user_id":usuario_id,
+            "user_id":Funcionarios.id,
+            "role":Funcionarios.role,
             "exp":datetime.now(timezone.utc)+ timedelta(hours=1)
         }
 
