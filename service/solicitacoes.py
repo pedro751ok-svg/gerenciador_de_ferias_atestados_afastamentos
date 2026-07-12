@@ -39,7 +39,7 @@ class Solicitacao_service:
         try:
             funcionario = db.query(Funcionarios).filter_by(id = id_funcionario).first()
             if not funcionario:
-                raise ValueError ("funcionario nao encontrado ")
+                raise ValueError ("funcionario nao encontrado")
             
             if data_fim < data_inicio:
                 raise ValueError (" as datas nao concidem")
@@ -208,25 +208,25 @@ class Solicitacao_service:
             close_db = True
         else:
             close_db = False
-            try:
-                solicitacao = db.query(Solicitacoes).filter_by(id = id_solicitacao).first()
-            
-                if not solicitacao:
-                    raise ValueError ("nenhum funcionario encontrado")
-                if solicitacao.status != StatEnum.pendente:
-                    raise ValueError ("so e possivel alterar solicitacoes pendentes")
-                if id_tipo:
-                    solicitacao.id_tipo = id_tipo
-                if data_inicio:
-                    solicitacao.data_inicio = data_inicio
-                if data_fim:
-                    solicitacao.data_fim = data_fim
-                db.commit()
-                db.refresh(solicitacao)
-                return solicitacao
-            except Exception as e:
-                db.rollback()
-                raise
-            finally:
-                if close_db:
-                    db.close()
+        try:
+            solicitacao = db.query(Solicitacoes).filter_by(id = id_solicitacao).first()
+        
+            if not solicitacao:
+                raise ValueError ("nenhum funcionario encontrado")
+            if solicitacao.status != StatEnum.pendente:
+                raise ValueError ("so e possivel alterar solicitacoes pendentes")
+            if id_tipo:
+                solicitacao.id_tipo = id_tipo
+            if data_inicio:
+                solicitacao.data_inicio = data_inicio
+            if data_fim:
+                solicitacao.data_fim = data_fim
+            db.commit()
+            db.refresh(solicitacao)
+            return solicitacao
+        except Exception as e:
+            db.rollback()
+            raise
+        finally:
+            if close_db:
+                db.close()

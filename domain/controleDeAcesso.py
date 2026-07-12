@@ -32,7 +32,7 @@ class ControleAcesso:
             "gerenciar_afastamento"
         ],
         "rh":[
-            "atualizar_solicitacao"
+            "atualizar_solicitacao",
             "cadastrar_funcionario"
         ]
     }

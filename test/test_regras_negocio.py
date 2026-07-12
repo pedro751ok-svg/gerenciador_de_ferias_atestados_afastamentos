@@ -51,11 +51,11 @@ def test_cadastrar(db_test):
     
 def test_login(db_test,funcionario_test):
     senha = "senha123"
-    resultado = Cadastro_e_login.login_funcionario(email = funcionario_test.email,
+    resultado = Cadastro_e_login.login_funcionario(
                                 cpf = funcionario_test.cpf,
                                 senha=senha,db = db_test)
     assert resultado is not None
-    assert resultado.email == funcionario_test.email
+    
     assert resultado.cpf == funcionario_test.cpf
     assert resultado.senha == funcionario_test.senha
 

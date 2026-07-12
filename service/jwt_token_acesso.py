@@ -8,8 +8,6 @@ load_dotenv()
 
 import os 
 
-senha = os.getenv(conf_priv.STK)
-
 
 class Gerando_token:
 
@@ -24,7 +22,7 @@ class Gerando_token:
 
         token = jwt.encode(
             payload,
-            senha,
+            conf_priv.STK,
             algorithm=conf_priv.ALGORITHM
         )
 
@@ -39,7 +37,7 @@ class Validar_token:
         try:
             payload = jwt.decode(
                 token,
-                senha,
+                conf_priv.STK,
                 algorithms=[conf_priv.ALGORITHM]  
     
             )

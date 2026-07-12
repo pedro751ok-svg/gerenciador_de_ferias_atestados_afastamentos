@@ -129,7 +129,7 @@ class ControleGeral:
 
         except Exception as e:
                
-                return jsonify({"erro",str(e)}),400
+                return jsonify({"erro":str(e)}),400
         
     @staticmethod
     def controlle_gerenciador_de_solicitacoes():
@@ -195,7 +195,7 @@ class ControleGeral:
 
         except Exception as e:
            
-            return jsonify({"erro",str(e)}),400
+            return jsonify({"erro":str(e)}),400
         
     @staticmethod
     def controlle_rejeitar_solicitacao():
@@ -232,7 +232,7 @@ class ControleGeral:
                 )
                 return jsonify({"resultado todas solicitacoes":solicitacao}),200
         except Exception as e:
-            return jsonify({"erro",str(e)}),400
+            return jsonify({"erro":str(e)}),400
         
     @staticmethod
     def controlle_cancelar_solicitacoes():

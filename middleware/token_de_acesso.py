@@ -11,7 +11,7 @@ def requer_token(funcao):
             token = auth.split(" ")[1]
         except:
             return jsonify({"erro":"token invalido"})
-        payload = Validar_token(token)
+        payload = Validar_token.validar_token(token)
         if not payload:
             return jsonify({"erro":"token invalido ou expirado"})
         request.user_id = payload["user_id"]

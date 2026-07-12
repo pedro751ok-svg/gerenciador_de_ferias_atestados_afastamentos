@@ -26,7 +26,7 @@ def test_validacao_login_dados_false(db_test):
     senha = "senha"
     cpf = "002992929299"
     email = "pedro@gmail.com"
-    resultado = Cadastro_e_login.login_funcionario(email = email,
+    resultado = Cadastro_e_login.login_funcionario(
                                 cpf = cpf,
                                 senha=senha,db = db_test)
 
@@ -34,7 +34,7 @@ def test_validacao_login_dados_false(db_test):
     assert resultado == "funcionario nao existe"
 def test_validacao_login_senha_errada(db_test,funcionario_test):
     senha = "senha"
-    resultado = Cadastro_e_login.login_funcionario(email = funcionario_test.email,
+    resultado = Cadastro_e_login.login_funcionario(
                                 cpf = funcionario_test.cpf,
                                 senha=senha,db = db_test)
     assert resultado == "senha invalida tente novamente"
@@ -43,34 +43,34 @@ def test_gerenciador_funcionario_nao_encontrado(db_test, tipo_de_solicitacao_tes
     
     data_inicio = datetime(2026, 7, 7)
     data_fim = datetime(2026, 7, 8)
+    with pytest.raises(ValueError) as exc_info:
+        Solicitacao_service.gerenciador_solicitacoes(
+            data_inicio=data_inicio,
+            data_fim=data_fim,
+            id_funcionario=9999,  
+            id_tipo=tipo_de_solicitacao_test.id,
+            dados_extras="{}",
+            db=db_test
+        )
     
-    resultado = Solicitacao_service.gerenciador_solicitacoes(
-        data_inicio=data_inicio,
-        data_fim=data_fim,
-        id_funcionario=9999,  
-        id_tipo=tipo_de_solicitacao_test.id,
-        dados_extras="{}",
-        db=db_test
-    )
-    
-    assert resultado == "funcionario nao encontrado "
+    assert "funcionario nao encontrado" in str(exc_info.value)
 
 
 def test_gerenciador_datas_nao_coincidem(db_test, funcionario_test, tipo_de_solicitacao_test):
    
     data_inicio = datetime(2026, 7, 8)
     data_fim = datetime(2026, 7, 7) 
+    with pytest.raises(ValueError) as exc_info:
+        Solicitacao_service.gerenciador_solicitacoes(
+            data_inicio=data_inicio,
+            data_fim=data_fim,
+            id_funcionario=funcionario_test.id,
+            id_tipo=tipo_de_solicitacao_test.id,
+            dados_extras="{}",
+            db=db_test
+        )
     
-    resultado = Solicitacao_service.gerenciador_solicitacoes(
-        data_inicio=data_inicio,
-        data_fim=data_fim,
-        id_funcionario=funcionario_test.id,
-        id_tipo=tipo_de_solicitacao_test.id,
-        dados_extras="{}",
-        db=db_test
-    )
-    
-    assert resultado == " as datas nao concidem"
+    assert " as datas nao concidem" in str(exc_info.value)
 
 def test_gerenciador_solicitacao_pendente_existente(db_test, funcionario_test, tipo_de_solicitacao_test, teste_de_solicitacoes):
     teste_de_solicitacoes.status = StatEnum.pendente
@@ -78,23 +78,24 @@ def test_gerenciador_solicitacao_pendente_existente(db_test, funcionario_test, t
     
     data_inicio = datetime(2026, 7, 10)
     data_fim = datetime(2026, 7, 12)
+    with pytest.raises(ValueError) as exc_info:
+        Solicitacao_service.gerenciador_solicitacoes(
+            data_inicio=data_inicio,
+            data_fim=data_fim,
+            id_funcionario=funcionario_test.id,
+            id_tipo=tipo_de_solicitacao_test.id,
+            dados_extras="{}",
+            db=db_test
+        )
     
-    resultado = Solicitacao_service.gerenciador_solicitacoes(
-        data_inicio=data_inicio,
-        data_fim=data_fim,
-        id_funcionario=funcionario_test.id,
-        id_tipo=tipo_de_solicitacao_test.id,
-        dados_extras="{}",
-        db=db_test
-    )
-    
-    assert resultado == "funcionario ja esta com uma solicitacao pendente"
+    assert "funcionario ja esta com uma solicitacao pendente" in str(exc_info.value)
 
 def test_aceitar_solicitacao_nao_encontrada(db_test):
    
     with pytest.raises(ValueError) as exc_info:
         Solicitacao_service.aceitar_solicitacao(
             id_solicitacao=9999,  
+            aprovado_por=1,
             db=db_test
         )
     
