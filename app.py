@@ -1,7 +1,7 @@
 from flask import Flask
 from routes.end_point import rota
 from models.dados_dos_funcionarios import Base, engine
-
+Base.metadata.create_all(engine)
 app = Flask(__name__)
 
 

@@ -45,7 +45,7 @@ class Validar_token:
             return payload
 
         except jwt.ExpiredSignatureError:
-            return "erro token invalido"
+            return None
 
         except jwt.InvalidTokenError:
-            return "token invalido"
+            return None

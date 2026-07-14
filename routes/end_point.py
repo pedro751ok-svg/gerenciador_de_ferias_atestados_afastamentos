@@ -4,7 +4,6 @@ from middleware.rbac import requer_permissao
 from middleware.token_de_acesso import requer_token
 rota = Blueprint("rota",__name__)
 @rota.route("/cadastro",methods = ["POST"])
-@requer_token
 @requer_permissao("cadastrar_funcionario")
 def cadastrar():
     return ControleGeral.controlle_de_cadastros()
