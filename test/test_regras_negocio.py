@@ -98,8 +98,8 @@ def test_rejeitar_solicitacoes(db_test,teste_de_solicitacoes,funcionario_test):
      resultado = Solicitacao_service.rejeitar_solicitacao(id_solicitacao=teste_de_solicitacoes.id,reprovado_por = funcionario_test.id,db = db_test)
      assert resultado.status == StatEnum.rejeitado
     
-def test_cancelar_solicitacao(db_test,teste_de_solicitacoes):
-     resultado = Solicitacao_service.cancelar_solicitacao(id_solicitacao=teste_de_solicitacoes.id,db = db_test)
+def test_cancelar_solicitacao(db_test,teste_de_solicitacoes,funcionario_test):
+     resultado = Solicitacao_service.cancelar_solicitacao(id_solicitacao=teste_de_solicitacoes.id,id_usuario = funcionario_test.id,db = db_test)
      assert resultado.status == StatEnum.cancelado
 
 def test_atualizar_solicitacao(db_test,teste_de_solicitacoes,funcionario_test,tipo_de_solicitacao_test):
@@ -110,6 +110,7 @@ def test_atualizar_solicitacao(db_test,teste_de_solicitacoes,funcionario_test,ti
           id_tipo = tipo_de_solicitacao_test.id,
           data_inicio = data_inicio,
           data_fim = data_fim,
+          id_usuario = funcionario_test.id,
           db = db_test)
     assert resultado is not None
     assert resultado.data_inicio == data_inicio

@@ -93,14 +93,14 @@ class Solicitacao_service:
             raise ValueError("tipo de solicitacao desconhecido")
 
     @staticmethod
-    def exibir_solicitacao(id_solicitacao:int,db: None):
+    def exibir_solicitacao(id_solicitacao:int,id_usuario:int,db: None):
         if db is None:
             db = session()
             close_db = True
         else:
             close_db = False
         try:
-            ver_solicitacoes = db.query(Solicitacoes).filter_by(id = id_solicitacao).first()
+            ver_solicitacoes = db.query(Solicitacoes).filter(Solicitacoes.id == id_solicitacao, Solicitacoes.id_funcionario == id_usuario).first()
             if not ver_solicitacoes:
                 raise ValueError("nenhuma solicitacao encontrada ")
             
@@ -162,22 +162,22 @@ class Solicitacao_service:
                 db.close()
 
     @staticmethod
-    def historico_solicitacoes(id_solicitacao):
+    def historico_solicitacoes(id_solicitacao:int,id_usuario:int):
         with session() as sessao:
-            ver_solicitacoes = sessao.query(Solicitacoes).filter_by(id = id_solicitacao).all()
+            ver_solicitacoes = sessao.query(Solicitacoes).filter(Solicitacoes.id == id_solicitacao,Solicitacoes.id_funcionario == id_usuario).all()
             if not ver_solicitacoes:
                 return " nenhum solicitacao ate o momento"
             return ver_solicitacoes 
 
     @staticmethod
-    def cancelar_solicitacao(id_solicitacao, db = None):
+    def cancelar_solicitacao(id_solicitacao,id_usuario:int, db = None):
         if db is None:
             db = session()
             close_db = True
         else:
             close_db = False
         try:
-            cancel_solicitacao = db.query(Solicitacoes).filter_by(id = id_solicitacao).first()
+            cancel_solicitacao = db.query(Solicitacoes).filter(Solicitacoes.id == id_solicitacao,Solicitacoes.id_funcionario == id_usuario).first()
             if not cancel_solicitacao:
                 raise ValueError("nenhuma solicitacao encontrada")
             if cancel_solicitacao.status == StatEnum.aprovado:
@@ -202,14 +202,14 @@ class Solicitacao_service:
             return solicitacoes
 
     @staticmethod
-    def atualizar_solicitacao(id_solicitacao:int,id_tipo:int = None,data_inicio:datetime = None,data_fim:datetime = None,db = None):
+    def atualizar_solicitacao(id_solicitacao:int,id_usuario:int,id_tipo:int = None,data_inicio:datetime = None,data_fim:datetime = None,db = None):
         if db is None:
             db = session()
             close_db = True
         else:
             close_db = False
         try:
-            solicitacao = db.query(Solicitacoes).filter_by(id = id_solicitacao).first()
+            solicitacao = db.query(Solicitacoes).filter(Solicitacoes.id == id_solicitacao, Solicitacoes.id_funcionario == id_usuario).first()
         
             if not solicitacao:
                 raise ValueError ("nenhum funcionario encontrado")

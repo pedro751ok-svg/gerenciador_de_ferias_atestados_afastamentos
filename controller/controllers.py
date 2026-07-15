@@ -45,6 +45,7 @@ class ControleGeral:
                     funcionario = AtestadoValidador.definir_cid(
                         id_solicitacao=id_solicitacao,
                         cid = cid,
+                       
                         db = db
                         )
                     db.commit()
@@ -137,7 +138,6 @@ class ControleGeral:
 
         data_inicio = dados.get("data_incio")
         data_fim = dados.get("data_fim")
-        id_funcionario = dados.get("id_funcionario")
         id_tipo = dados.get("id_tipo")
         dados_extras = dados.get("dados_extras")
         try:
@@ -146,9 +146,10 @@ class ControleGeral:
                 gerenciador = Solicitacao_service.gerenciador_solicitacoes(
                     data_inicio=data_inicio,
                     data_fim=data_fim,
-                    id_funcionario=id_funcionario,
+                    id_funcionario=request.user_id,
                     id_tipo=id_tipo,
                     dados_extras=dados_extras,
+        
                     db = db
                 )
                 return jsonify({"sucesso":"solicitacao criada com sucesso",
@@ -168,6 +169,7 @@ class ControleGeral:
             with session() as db:
                 solicitacao = Solicitacao_service.exibir_solicitacao(
                     id_solicitacao=id_solicitacao,
+                    id_usuario = request.user_id,
                     db=db
                 )
                 return jsonify({"resultado":solicitacao}),200
@@ -178,14 +180,15 @@ class ControleGeral:
     def controlle_aceitar_solicitacoes():
         dados = request.get_json()
         id_solicitacao = dados.get("id_solicitacao")
-        aprovado_por = dados.get("aprovado_por")
+       
 
         try:
            
             with session() as db:
                 Solicitacao = Solicitacao_service.aceitar_solicitacao(
                     id_solicitacao=id_solicitacao,
-                    aprovado_por=aprovado_por,
+                    aprovado_por=request.user_id,
+                   
                     db= db
                 )
                 db.commit()
@@ -202,13 +205,14 @@ class ControleGeral:
         dados = request.get_json()
 
         id_solicitacao = dados.get("id_solicitacao")
-        reprovado_por = dados.get("reprovado_por")
+   
         try:
            
             with session() as db:
                 solicitacao = Solicitacao_service.rejeitar_solicitacao(
                     id_solicitacao=id_solicitacao,
-                    reprovado_por=reprovado_por,
+                    reprovado_por=request.user_id,
+                    
                     db=db
                 )
                 db.commit()
@@ -228,6 +232,7 @@ class ControleGeral:
             with session() as db:
                 solicitacao = Solicitacao_service.historico_solicitacoes(
                     id_solicitacao=id_solicitacao,
+                    id_usuario = request.user_id,
                     db=db
                 )
                 return jsonify({"resultado todas solicitacoes":solicitacao}),200
@@ -243,6 +248,7 @@ class ControleGeral:
             with session() as db:
                 solicitacao = Solicitacao_service.cancelar_solicitacao(
                     id_solicitacao=id_solicitacao,
+                    id_usuario = request.user.id,
                     db=db
                 )
                 db.commit()
@@ -258,7 +264,7 @@ class ControleGeral:
     def controlle_solicitacoes_pendentes():
         solicitacao_status = request.args.get("status")
         try:
-            resultado = Solicitacao_service.listar_solicitações_pendentes(solicitacao_status=solicitacao_status)
+            resultado = Solicitacao_service.listar_solicitações_pendentes(solicitacao_status=solicitacao_status,id_usuario = request.user_id,)
             if isinstance (resultado ,str):
                 return jsonify({"sucesso":resultado}),200
             lista = [{
@@ -289,6 +295,7 @@ class ControleGeral:
                     id_tipo=id_tipo,
                     data_inicio=data_inicio,
                     data_fim=data_fim,
+                    id_usuario = request.user_id,
                     db=db
                 )
                 db.commit()

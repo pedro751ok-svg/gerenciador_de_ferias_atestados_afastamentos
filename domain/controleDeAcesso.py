@@ -32,8 +32,10 @@ class ControleAcesso:
             "gerenciar_afastamento"
         ],
         "rh":[
-            "atualizar_solicitacao",
-            "cadastrar_funcionario"
+            "listar_solicitacoes_pendentes",
+            "historico_solicitacoes",
+            "aceitar_solicitacao",
+            "rejeitar_solicitacao"  
         ]
     }
     @staticmethod
