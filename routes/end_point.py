@@ -2,14 +2,16 @@ from flask import Blueprint
 from controller.controllers import ControleGeral
 from middleware.rbac import requer_permissao
 from middleware.token_de_acesso import requer_token
+from extensoes import limiter
 rota = Blueprint("rota",__name__)
+requer_token()
 @rota.route("/cadastro",methods = ["POST"])
 @requer_permissao("cadastrar_funcionario")
 def cadastrar():
     return ControleGeral.controlle_de_cadastros()
 
 @rota.route("/login",methods = ["POST"])
-@requer_token
+@limiter.limit("3 per minute")
 def login():
     return ControleGeral.controlle_de_logins()
 

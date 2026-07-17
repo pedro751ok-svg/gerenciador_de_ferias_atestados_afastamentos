@@ -30,9 +30,11 @@ class ControleGeral:
                                 "id_solicitacao":funcionario.id_solicitacao,
                                 "tipo_de_solicitacao":funcionario.codigo_especie}),200
         
-            except Exception as e:
+            except ValueError as e:
                     db.rollback()
-                    return jsonify({"erro":str(e)}),400
+                    return jsonify({"erro": str(e)}), 400
+            except Exception as e:
+                return jsonify({"erro":"erro interno do sistema, por favor tente maois tarde"}),500
             
     @staticmethod
     def controlle_atestados():
@@ -52,10 +54,12 @@ class ControleGeral:
                     return jsonify({"sucesso":"cid atualizado com sucesso",
                                     "id_solicitacao":funcionario.id}),200
         
+        except ValueError as e:
+            db.rollback()
+            return jsonify({"erro": str(e)}), 400
         except Exception as e:
-                db.rollback()
-                return jsonify({"erro":str(e)}),400
-        
+            return jsonify({"erro":"erro interno do sistema, por favor tente maois tarde"}),500
+            
     @staticmethod
     def controlle_de_cadastros():
         dados = request.get_json()
@@ -85,9 +89,12 @@ class ControleGeral:
                                 "id funcionario":novo_funcionario.id,
                                 "nome":novo_funcionario.nome,
                                 "role":novo_funcionario.role}),200
+        except ValueError as e:
+            db.rollback()
+            return jsonify({"erro": str(e)}), 400
         except Exception as e:
-      
-            return jsonify({"erro":str(e)}),400
+            return jsonify({"erro":"erro interno do sistema, por favor tente maois tarde"}),500
+            
         
     @staticmethod
     def controlle_de_logins():
@@ -107,9 +114,12 @@ class ControleGeral:
                                 "id_funcionario":funcionario.id,
                                 "token":token}),200
 
+        except ValueError as e:
+            db.rollback()
+            return jsonify({"erro": str(e)}), 400
         except Exception as e:
+            return jsonify({"erro":"erro interno do sistema, por favor tente maois tarde"}),500
             
-            return jsonify({"erro":str(e)}),400
         
     @staticmethod
     def controlle_tipo_de_solicitacao():
@@ -127,10 +137,12 @@ class ControleGeral:
                 )
                 return jsonify({"sucesso":"solicitacao enviada para analise com sucesso",
                                 "id da solicitacao":solicitacao.id}),200
-
+        except ValueError as e:
+            db.rollback()
+            return jsonify({"erro": str(e)}), 400
         except Exception as e:
-               
-                return jsonify({"erro":str(e)}),400
+            return jsonify({"erro":"erro interno do sistema, por favor tente maois tarde"}),500
+            
         
     @staticmethod
     def controlle_gerenciador_de_solicitacoes():
@@ -156,10 +168,12 @@ class ControleGeral:
                                 "id_solicitacao":gerenciador.id,
                                 "status_atual":gerenciador.status}),200
 
+        except ValueError as e:
+            db.rollback()
+            return jsonify({"erro": str(e)}), 400
         except Exception as e:
+            return jsonify({"erro":"erro interno do sistema, por favor tente maois tarde"}),500
             
-            return jsonify({"erro": str(e)}),400
-        
     @staticmethod
     def controlle_exibir_solicitacao():
         dados = request.get_json()
@@ -173,8 +187,12 @@ class ControleGeral:
                     db=db
                 )
                 return jsonify({"resultado":solicitacao}),200
+        except ValueError as e:
+            db.rollback()
+            return jsonify({"erro": str(e)}), 400
         except Exception as e:
-            return jsonify({"erro":str(e)}),400
+            return jsonify({"erro":"erro interno do sistema, por favor tente maois tarde"}),500
+            
         
     @staticmethod
     def controlle_aceitar_solicitacoes():
@@ -196,9 +214,12 @@ class ControleGeral:
                                 "id da solicitacao":Solicitacao.id,
                                 "aprovado por":Solicitacao.aprovado_por}),200
 
+        except ValueError as e:
+            db.rollback()
+            return jsonify({"erro": str(e)}), 400
         except Exception as e:
-           
-            return jsonify({"erro":str(e)}),400
+            return jsonify({"erro":"erro interno do sistema, por favor tente maois tarde"}),500
+            
         
     @staticmethod
     def controlle_rejeitar_solicitacao():
@@ -220,9 +241,12 @@ class ControleGeral:
                                 "id da solicitacao":solicitacao.id,
                                 "reprovada por":solicitacao.reprovado_por}),200
 
+        except ValueError as e:
+            db.rollback()
+            return jsonify({"erro": str(e)}), 400
         except Exception as e:
-
-            return jsonify({"erro":str (e)}),400
+            return jsonify({"erro":"erro interno do sistema, por favor tente maois tarde"}),500
+            
         
     @staticmethod
     def controlle_historico_de_solicitacoes():
@@ -236,9 +260,12 @@ class ControleGeral:
                     db=db
                 )
                 return jsonify({"resultado todas solicitacoes":solicitacao}),200
+        except ValueError as e:
+            db.rollback()
+            return jsonify({"erro": str(e)}), 400
         except Exception as e:
-            return jsonify({"erro":str(e)}),400
-        
+            return jsonify({"erro":"erro interno do sistema, por favor tente maois tarde"}),500
+            
     @staticmethod
     def controlle_cancelar_solicitacoes():
         dados = request.get_json()
@@ -248,7 +275,7 @@ class ControleGeral:
             with session() as db:
                 solicitacao = Solicitacao_service.cancelar_solicitacao(
                     id_solicitacao=id_solicitacao,
-                    id_usuario = request.user.id,
+                    id_usuario = request.user_id,
                     db=db
                 )
                 db.commit()
@@ -256,9 +283,12 @@ class ControleGeral:
                                 "id_solicitacao":solicitacao.id,
                                 "status da solicitacao":solicitacao.status}),200
 
+        except ValueError as e:
+            db.rollback()
+            return jsonify({"erro": str(e)}), 400
         except Exception as e:
-         
-            return jsonify({"erro":str(e)}),400
+            return jsonify({"erro":"erro interno do sistema, por favor tente maois tarde"}),500
+            
         
     @staticmethod
     def controlle_solicitacoes_pendentes():
@@ -278,8 +308,11 @@ class ControleGeral:
             for s in resultado
             ]
             return jsonify({"solicitacoes":lista}),200
+        except ValueError as e:
+            return jsonify({"erro": str(e)}), 400
         except Exception as e:
-            return jsonify({"erro":str(e)}),400
+            return jsonify({"erro":"erro interno do sistema, por favor tente maois tarde"}),500
+            
         
     def controlle_atualizar_solicitacoes():
         dados = request.get_json()
@@ -302,6 +335,9 @@ class ControleGeral:
                 return jsonify({"sucesso":"solicitacao atualizada com sucesso",
                                 "consultar atualizacoes":solicitacao.id_solicitacao}),200
 
+        except ValueError as e:
+            db.rollback()
+            return jsonify({"erro": str(e)}), 400
         except Exception as e:
-    
-            return jsonify({"erro":str(e)}),400
+            return jsonify({"erro":"erro interno do sistema, por favor tente maois tarde"}),500
+            

@@ -5,23 +5,19 @@ from domain.constantes_de_status import StatEnum
 from models.dados_dos_funcionarios import Funcionarios
 from datetime import datetime
 def test_funcionario_ja_existe(db_test,funcionario_test):
-    novo_funcionario = Cadastro_e_login.cadastro_de_usuario(
-        nome=funcionario_test.nome,
-        email=funcionario_test.email,
-        cpf = funcionario_test.cpf,
-        senha = funcionario_test.senha,
-        role = funcionario_test.role,
-        setor = funcionario_test.setor,
-        ativo= funcionario_test.ativo,
-        db = db_test
+    with pytest.raises(ValueError, match="usuario ja cadastrado"):
+        novo_funcionario = Cadastro_e_login.cadastro_de_usuario(
+            nome=funcionario_test.nome,
+            email=funcionario_test.email,
+            cpf = funcionario_test.cpf,
+            senha = funcionario_test.senha,
+            role = funcionario_test.role,
+            setor = funcionario_test.setor,
+            ativo= funcionario_test.ativo,
+            db = db_test
 
-        )
+            )
     
-    registro = db_test.query(Funcionarios).filter_by(email = "pedro751@gamil.com").first()
-    assert registro is None
-    print(type(novo_funcionario))
-    print(novo_funcionario)
-
 def test_validacao_login_dados_false(db_test):
     senha = "senha"
     cpf = "002992929299"

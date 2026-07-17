@@ -9,13 +9,15 @@ class Cadastro_e_login:
             close_db = True
         else:
             close_db = False
-        try:
+    
             if not  Gerenciador_cpf.validar_cpf(cpf):
-                return "cpf invalido"
-            senha_ok = Senha_hash.senha_hash(senha)
+                raise ValueError ("cpf invalido")
+
             existe = db.query(Funcionarios).filter_by(cpf=cpf).first()
             if existe:
-                return " usuario ja cadastrado"
+                raise ValueError("usuario ja cadastrado")
+            senha_ok = Senha_hash.senha_hash(senha)
+        try:
             funcionario = Funcionarios(
                 nome=nome,
                 email=email,

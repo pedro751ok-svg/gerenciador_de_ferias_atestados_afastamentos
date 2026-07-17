@@ -24,7 +24,7 @@ def funcionario_test(db_test):
     funcionario_de_test = Funcionarios(
     nome="Teste",
     email="teste@teste.com",
-    cpf="00000000000",
+    cpf="11144477735",
     senha= senha_cp,
     role=Roleenum.gerente,
     setor="producao",
