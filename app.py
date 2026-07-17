@@ -11,4 +11,4 @@ limiter.init_app(app)
 app.register_blueprint(rota)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
